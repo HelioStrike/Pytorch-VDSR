@@ -55,7 +55,7 @@ def main():
     #adjust learning rate
     def adjust_learning_rate():
         for param_group in optimizer.param_groups:
-            param_group['lr'] = param_group['lr']*0.7
+            param_group['lr'] = param_group['lr']*0.8
 
 
     #see how well the model is doing by saving images
@@ -67,7 +67,7 @@ def main():
         img_sample = torch.cat((inp.data, outs.data, target), 0)
         save_image(img_sample, './images/%s.png' % (epoch_num), nrow=3, normalize=True)
 
-    print("Running...")
+    #training the model
     for epoch in range(num_epochs):
         epoch_loss = 0
         for i, batch in enumerate(train_loader):
