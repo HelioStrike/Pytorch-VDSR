@@ -13,6 +13,8 @@ parser.add_argument("--cuda", action="store_true", help="use cuda?")
 parser.add_argument("--model", default="./models/srnet1.pth", type=str, help="model path")
 parser.add_argument("--imagepath", default="./testimages", type=str, help="image path")
 parser.add_argument("--savepath", default="./saveimages", type=str, help="image save path")
+parser.add_argument("--height", default=0, help="output height")
+parser.add_argument("--width", default=0, help="output width")
 opt = parser.parse_args()
 
 cuda = opt.cuda
@@ -25,7 +27,10 @@ if(cuda):
     model = model.cuda()
 
 #transforms to be applied on each image before entering the model
-tfms = transforms.Compose([transforms.ToTensor()])
+if(opt.height == 0 or opt.width == 0):
+    tfms = transforms.Compose([transforms.ToTensor()])
+else:
+    tfms = transforms.Compose([transforms.ToTensor(), transforms.Resize(opt.height, opt.width)])
 
 #we pass each image in imagepath through the model and save it in savepath
 for file in list(glob.glob(opt.imagepath + '/*.*')):
