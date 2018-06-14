@@ -20,9 +20,9 @@ def main():
     #init weights
     def weights_init_normal(m):
         classname = m.__class__.__name__
-        if(classname.find('Conv') != -1):
+        if(classname.find('Conv') != -1 and classname.find('2d') != -1):
             torch.nn.init.normal_(m.weight.data, 0.0, 0.02)
-        elif (classname.find('BatchNorm2d') != -1):
+        elif (classname.find('Norm2d') != -1):
             torch.nn.init.normal_(m.weight.data, 1.0, 0.02)
             torch.nn.init.constant_(m.bias.data, 0.0)
 
@@ -48,6 +48,7 @@ def main():
     if(torch.cuda.is_available()):
         model = model.cuda()
         criterion.cuda()
+    model.apply(weights_init_normal)
 
     #optimizer
     optimizer = optim.Adam(model.parameters(), lr=lr, betas=(b1, b2))
@@ -67,6 +68,7 @@ def main():
         img_sample = torch.cat((inp.data, outs.data, target), 0)
         save_image(img_sample, './images/%s.png' % (epoch_num), nrow=3, normalize=True)
 
+    print("Training...")
     #training the model
     for epoch in range(num_epochs):
         epoch_loss = 0
